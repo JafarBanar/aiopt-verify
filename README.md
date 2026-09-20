@@ -19,8 +19,8 @@ pip install cryptography     # the only dependency; everything else is stdlib
 ## Use
 
 ```bash
-python aiopt_verify.py /path/to/evidence-pack        # human report
-python aiopt_verify.py /path/to/evidence-pack --json # machine-readable
+python3 aiopt_verify.py /path/to/evidence-pack        # human report
+python3 aiopt_verify.py /path/to/evidence-pack --json # machine-readable
 ```
 
 Exit code `0` = verified; `1` = altered/truncated/inauthentic; `2` = usage error.
@@ -28,8 +28,8 @@ Exit code `0` = verified; `1` = altered/truncated/inauthentic; `2` = usage error
 No pack at hand? Generate one and verify it:
 
 ```bash
-python make_sample_pack.py /tmp/demo
-python aiopt_verify.py /tmp/demo/two_party
+python3 make_sample_pack.py /tmp/demo
+python3 aiopt_verify.py /tmp/demo/two_party
 ```
 
 ## What a pack contains
