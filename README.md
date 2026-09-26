@@ -1,16 +1,18 @@
 # aiopt-verify
 
 Offline verifier for **AIOpt evidence packs**. Given a pack (an approvals-and-
-refusals record from an operator's network-change gate), it confirms the pack is
-authentic and complete **without trusting AIOpt** — it re-derives every hash and
-checks every signature itself, and shares no code with the writer.
+refusals record from an operator's network-change gate), it re-derives every
+hash and checks every signature itself, and reports whether the pack is
+authentic and complete. It shares no code with the system that writes the
+records.
 
-This directory is a standalone, MIT-licensed tool with no dependency on the
-AIOpt platform: one file to verify (`aiopt_verify.py`), one file that doubles as
-an executable spec of the pack format (`make_sample_pack.py`), and a test suite.
-It can be split out as its own public repository as-is.
+A standalone, MIT-licensed tool: one file to verify (`aiopt_verify.py`), one
+file that doubles as an executable spec of the pack format
+(`make_sample_pack.py`), and a test suite.
 
 ## Install
+
+Requires Python 3 and the `cryptography` package.
 
 ```bash
 pip install cryptography     # the only dependency; everything else is stdlib
@@ -39,7 +41,7 @@ ledger.jsonl       append-only, Ed25519-signed, chain-hashed verdict records
 manifest.json      signed manifest committing to record count, head hash, and
                    the SHA-256 of the whole ledger
 pubkey.pem         the operator's Ed25519 public key (verify-only)
-pubkey_actor.pem   (two-party packs) the change-author's public key — every
+pubkey_actor.pem   (two-party packs) the change-author's public key; every
                    record must ALSO carry a valid actor signature
 anchor.* / *.ots   (optional) an external-clock proof of the manifest hash
 ```
@@ -50,7 +52,7 @@ anchor.* / *.ots   (optional) an external-clock proof of the manifest hash
 - **Deletion of a middle record** → the hash chain breaks and the count is short.
 - **Deletion of the last record (truncation)** → the chain alone still looks
   valid, but the signed manifest's `record_count`, `head_hash`, and
-  `ledger_sha256` no longer match — and the manifest cannot be re-signed without
+  `ledger_sha256` no longer match, and the manifest cannot be re-signed without
   the operator's private key, which is not in the pack.
 - **Single-party forgery in a two-party pack** → each record needs both the
   operator's and the change-author's signature over the same canonical bytes;
@@ -75,10 +77,10 @@ pip install cryptography pytest
 pytest test_aiopt_verify.py     # clean packs verify; every tamper fails
 ```
 
-The tests build packs with `make_sample_pack.py` — written independently of the
-platform's pack writer — so passing them also demonstrates that two independent
+The tests build packs with `make_sample_pack.py` (written independently of the
+platform's pack writer), so passing them also demonstrates that two independent
 implementations of the format agree.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
